@@ -1,0 +1,8 @@
+{
+ "seam": {
+  "orientation": "horizontal",
+  "center": 630,
+  "half_width": 42
+ },
+ "defects": []
+}

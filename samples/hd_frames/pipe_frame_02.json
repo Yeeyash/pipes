@@ -1,0 +1,59 @@
+{
+ "seam": {
+  "orientation": "horizontal",
+  "center": 494,
+  "half_width": 42
+ },
+ "defects": [
+  {
+   "cls": "scratches",
+   "box": [
+    1683,
+    436,
+    1880,
+    454
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "scratches",
+   "box": [
+    1683,
+    493,
+    1880,
+    519
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "pitted_surface",
+   "box": [
+    1277,
+    226,
+    1477,
+    424
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "scratches",
+   "box": [
+    1983,
+    447,
+    1999,
+    477
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "scratches",
+   "box": [
+    2062,
+    500,
+    2086,
+    588
+   ],
+   "on_seam": true
+  }
+ ]
+}

@@ -1,0 +1,149 @@
+{
+ "seam": {
+  "orientation": "horizontal",
+  "center": 535,
+  "half_width": 42
+ },
+ "defects": [
+  {
+   "cls": "pitted_surface",
+   "box": [
+    832,
+    440,
+    909,
+    640
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "pitted_surface",
+   "box": [
+    975,
+    538,
+    1031,
+    640
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "pitted_surface",
+   "box": [
+    913,
+    440,
+    1015,
+    627
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    870,
+    1011,
+    920,
+    1109
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    893,
+    914,
+    939,
+    958
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "patches",
+   "box": [
+    156,
+    896,
+    218,
+    965
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "patches",
+   "box": [
+    218,
+    897,
+    304,
+    1026
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "patches",
+   "box": [
+    219,
+    1039,
+    279,
+    1081
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "patches",
+   "box": [
+    156,
+    1010,
+    199,
+    1096
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "patches",
+   "box": [
+    334,
+    1023,
+    355,
+    1056
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "patches",
+   "box": [
+    238,
+    897,
+    316,
+    933
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    2049,
+    874,
+    2124,
+    1012
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    2108,
+    845,
+    2207,
+    886
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    2046,
+    830,
+    2104,
+    886
+   ],
+   "on_seam": false
+  }
+ ]
+}

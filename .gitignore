@@ -1,0 +1,33 @@
+# Datasets (NEU-DET + generated background tiles) - fetch with scripts/download_data.py
+data/
+
+# Training outputs and logs
+runs/
+
+# Model weights (large binaries; regenerate with train.py)
+*.pt
+*.pth
+*.onnx
+*.engine
+models/
+weights/
+
+# Generated images/outputs (regenerate with make_demo_frames.py / detect.py / simulate_line.py)
+samples/**/*.jpg
+samples/**/*.jpeg
+samples/**/*.png
+results/**/*.jpg
+results/**/*.jpeg
+results/**/*.png
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Local tooling / OS
+.claude/settings.local.json
+.DS_Store
+Thumbs.db

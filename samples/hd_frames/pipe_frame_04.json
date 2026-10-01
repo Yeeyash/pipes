@@ -1,0 +1,79 @@
+{
+ "seam": {
+  "orientation": "horizontal",
+  "center": 655,
+  "half_width": 42
+ },
+ "defects": [
+  {
+   "cls": "inclusion",
+   "box": [
+    1509,
+    664,
+    1525,
+    698
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1594,
+    694,
+    1609,
+    723
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1592,
+    733,
+    1617,
+    766
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "crazing",
+   "box": [
+    448,
+    1063,
+    638,
+    1128
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "crazing",
+   "box": [
+    448,
+    935,
+    567,
+    991
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "crazing",
+   "box": [
+    547,
+    996,
+    645,
+    1040
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "pitted_surface",
+   "box": [
+    1121,
+    956,
+    1321,
+    1154
+   ],
+   "on_seam": false
+  }
+ ]
+}

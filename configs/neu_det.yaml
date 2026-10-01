@@ -1,0 +1,15 @@
+path: C:\Users\Thaka\pyy\pipe\data\NEU-DET
+train:
+- C:\Users\Thaka\pyy\pipe\data\NEU-DET\images\train
+- C:\Users\Thaka\pyy\pipe\data\negatives\images\train
+val:
+- C:\Users\Thaka\pyy\pipe\data\NEU-DET\images\val
+- C:\Users\Thaka\pyy\pipe\data\negatives\images\val
+test: C:\Users\Thaka\pyy\pipe\data\NEU-DET\images\test
+names:
+  0: crazing
+  1: inclusion
+  2: patches
+  3: pitted_surface
+  4: rolled-in_scale
+  5: scratches

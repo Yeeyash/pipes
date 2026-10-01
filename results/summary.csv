@@ -1,0 +1,7 @@
+image,verdict,reason,n_defects,seam_found,tiles,ms
+pipe_frame_00.jpg,PASS,No defects detected.,0,True,98,960
+pipe_frame_01.jpg,FAIL,"Reject-class defect(s): Inclusion, Pitted surface.",17,True,98,414
+pipe_frame_02.jpg,FAIL,Reject-class defect(s): Pitted surface.,5,True,98,383
+pipe_frame_03.jpg,FAIL,Reject-class defect(s): Pitted surface.,10,True,98,342
+pipe_frame_04.jpg,FAIL,"Reject-class defect(s): Crazing, Inclusion, Pitted surface.",6,True,98,335
+pipe_frame_05.jpg,FAIL,"Reject-class defect(s): Crazing, Inclusion, Pitted surface.",9,True,98,337

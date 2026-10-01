@@ -1,0 +1,139 @@
+{
+ "seam": {
+  "orientation": "horizontal",
+  "center": 689,
+  "half_width": 42
+ },
+ "defects": [
+  {
+   "cls": "inclusion",
+   "box": [
+    1113,
+    622,
+    1130,
+    684
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1094,
+    608,
+    1108,
+    634
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1137,
+    638,
+    1174,
+    720
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1100,
+    732,
+    1134,
+    794
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1064,
+    638,
+    1080,
+    682
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1040,
+    669,
+    1051,
+    693
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1143,
+    696,
+    1161,
+    749
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1040,
+    697,
+    1053,
+    723
+   ],
+   "on_seam": true
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1042,
+    752,
+    1054,
+    780
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "crazing",
+   "box": [
+    1399,
+    1016,
+    1526,
+    1130
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "crazing",
+   "box": [
+    1413,
+    972,
+    1543,
+    1025
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "pitted_surface",
+   "box": [
+    953,
+    61,
+    1102,
+    255
+   ],
+   "on_seam": false
+  },
+  {
+   "cls": "pitted_surface",
+   "box": [
+    905,
+    83,
+    961,
+    258
+   ],
+   "on_seam": false
+  }
+ ]
+}

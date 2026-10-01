@@ -1,0 +1,38 @@
+defect,severity,confidence,start_mm,end_mm,length_mm,across_mm,on_seam,frames
+inclusion,reject,0.285,145.0,146.8,1.8,41.3,True,0
+inclusion,reject,0.150,145.4,146.9,1.5,48.5,True,0
+inclusion,reject,0.670,147.8,149.6,1.8,37.5,True,0
+inclusion,reject,0.146,150.6,152.3,1.8,34.5,False,0
+inclusion,reject,0.712,150.7,154.0,3.3,48.3,True,0
+inclusion,reject,0.750,152.6,154.7,2.1,37.2,True,0
+inclusion,reject,0.447,155.1,159.0,3.9,43.0,True,0
+rolled-in_scale,minor,0.166,312.5,321.3,8.8,28.9,False,1
+rolled-in_scale,minor,0.740,346.4,355.8,9.4,48.4,True,1
+rolled-in_scale,minor,0.540,417.7,426.8,9.1,51.4,False,1 2 2
+rolled-in_scale,minor,0.270,419.9,429.6,9.8,41.8,True,1 2
+rolled-in_scale,minor,0.664,430.5,435.1,4.6,51.2,False,1 2
+rolled-in_scale,minor,0.583,624.9,629.9,5.1,61.7,False,2 3
+rolled-in_scale,minor,0.140,632.5,636.6,4.1,54.5,False,3
+rolled-in_scale,minor,0.663,635.5,639.6,4.0,63.8,False,3
+inclusion,reject,0.470,1077.7,1080.3,2.7,39.7,True,5
+inclusion,reject,0.200,1077.9,1079.3,1.4,47.6,True,5
+inclusion,reject,0.629,1080.6,1082.5,1.9,38.0,True,5
+inclusion,reject,0.564,1080.7,1085.3,4.6,51.5,False,5
+scratches,minor,0.657,1226.2,1227.8,1.6,52.6,False,6
+scratches,minor,0.714,1234.3,1235.8,1.5,53.2,False,6
+scratches,minor,0.327,1237.7,1238.7,1.0,52.0,False,6
+crazing,reject,0.126,1428.3,1437.6,9.3,11.4,False,7
+crazing,reject,0.642,1428.8,1445.8,16.9,17.8,False,7
+patches,minor,0.830,1589.4,1598.5,9.0,68.8,False,7 8
+patches,minor,0.619,1599.2,1607.6,8.4,72.5,False,7 7
+patches,minor,0.826,1600.0,1607.7,7.7,69.9,False,7 8
+patches,minor,0.763,1600.8,1608.0,7.2,44.0,True,7 8
+patches,minor,0.620,1609.0,1616.2,7.2,47.7,True,7 8
+inclusion,reject,0.741,1741.7,1744.7,2.9,81.6,False,8
+inclusion,reject,0.726,1743.6,1745.1,1.5,75.1,False,8
+inclusion,reject,0.360,1745.2,1748.2,2.9,80.2,False,8
+inclusion,reject,0.524,1754.3,1755.9,1.6,88.2,False,8
+inclusion,reject,0.519,1754.3,1755.8,1.5,81.4,False,8
+inclusion,reject,0.171,1756.6,1760.1,3.5,83.4,False,8 9
+patches,minor,0.883,1974.4,1981.7,7.4,40.5,True,9
+patches,minor,0.647,1983.6,1985.9,2.3,52.0,False,9
