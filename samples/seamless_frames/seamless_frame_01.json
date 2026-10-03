@@ -1,0 +1,95 @@
+{
+ "pipe": "seamless",
+ "mm_per_px": 0.2,
+ "seam": null,
+ "defects": [
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    1754,
+    310,
+    1812,
+    370
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    1842,
+    287,
+    1897,
+    363
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    1741,
+    176,
+    1814,
+    285
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "crazing",
+   "box": [
+    643,
+    1076,
+    696,
+    1160
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "patches",
+   "box": [
+    1904,
+    724,
+    1952,
+    787
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "patches",
+   "box": [
+    1889,
+    622,
+    1973,
+    681
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "patches",
+   "box": [
+    228,
+    64,
+    289,
+    176
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "patches",
+   "box": [
+    140,
+    65,
+    189,
+    128
+   ],
+   "on_seam": false,
+   "source": "surface"
+  }
+ ]
+}

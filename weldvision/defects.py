@@ -50,6 +50,27 @@ DEFECTS = {
         "Linear mechanical marks.",
         "Along the seam this is the signature of scarfing-tool gouges or chatter; elsewhere roll/handling marks.",
         "minor", (0, 220, 0)),
+    # SAW bead findings, measured by weldvision.bead (classical image analysis, not the detector).
+    "undercut": DefectInfo(
+        "undercut", "Undercut",
+        "Groove melted into the plate at the weld toe and left unfilled.",
+        "Notch at the toe: a fatigue crack starter. Standards limit its depth and length; repair by welding.",
+        "reject", (0, 0, 180)),
+    "porosity": DefectInfo(
+        "porosity", "Surface porosity",
+        "Gas pores breaking the bead surface.",
+        "Points to wet flux, contamination or bad shielding; pores at the surface often continue inside.",
+        "reject", (180, 0, 180)),
+    "bead_width": DefectInfo(
+        "bead_width", "Bead width out of tolerance",
+        "The bead narrows or widens over a stretch.",
+        "Unstable current, voltage, travel speed or flux feed; a narrow bead may not cover the joint.",
+        "minor", (0, 140, 255)),
+    "seam_tracking": DefectInfo(
+        "seam_tracking", "Bead off the joint line",
+        "The weld bead wanders sideways away from its line.",
+        "Seam tracking lost the groove: risk of lack of fusion at the joint under the bead.",
+        "minor", (255, 0, 160)),
 }
 
 # Target classes for a line-specific dataset (not in the demo model).

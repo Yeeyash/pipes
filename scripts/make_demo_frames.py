@@ -8,7 +8,9 @@ Each frame is a procedurally generated pipe surface with:
 
 Ground truth goes to <out>/<frame>.json so the pipeline can be scored on these frames.
 
-    python scripts/make_demo_frames.py --n 6
+    python scripts/make_demo_frames.py --n 6                 # ERW -> samples/hd_frames
+    python scripts/make_demo_frames.py --pipe lsaw --n 4     # also hsaw, seamless (see synth_pipes.py)
+    python scripts/make_demo_frames.py --pipe all
 """
 import argparse
 import json
@@ -23,14 +25,15 @@ NEU = ROOT / "data" / "NEU-DET"
 NAMES = (NEU / "classes.txt").read_text().split()
 
 
-def pipe_surface(h, w, rng):
-    """Grey steel with rolling streaks along x, mottling and cylinder shading along y."""
+def pipe_surface(h, w, rng, shading=True):
+    """Grey steel with rolling streaks along x, mottling and (optionally) cylinder shading along y."""
     streaks = cv2.GaussianBlur(rng.normal(0, 1, (h, w)).astype(np.float32), (0, 0), sigmaX=40, sigmaY=1.2)
     mottling = cv2.GaussianBlur(rng.normal(0, 1, (h, w)).astype(np.float32), (0, 0), 60)
     grain = rng.normal(0, 1, (h, w)).astype(np.float32)
     base = 118 + 5 * streaks / (streaks.std() + 1e-6) + 7 * mottling / (mottling.std() + 1e-6) + 4 * grain
-    y = np.linspace(-1, 1, h, dtype=np.float32)[:, None]
-    base *= 0.75 + 0.3 * np.cos(y * 1.2)  # light falls off towards the pipe flanks
+    if shading:
+        y = np.linspace(-1, 1, h, dtype=np.float32)[:, None]
+        base *= 0.75 + 0.3 * np.cos(y * 1.2)  # light falls off towards the pipe flanks
     return base
 
 
@@ -95,27 +98,59 @@ def make_frame(i, w, h, n_defects, rng, pool):
     return bgr, {"seam": {"orientation": "horizontal", "center": cy, "half_width": half}, "defects": gt}
 
 
+# Spiral pipes for the HSAW frames: (OD mm, strip width mm) -> seam angle to the pipe axis.
+HSAW_PIPES = [(1016, 1500), (813, 1250), (1219, 1800), (1422, 1500)]
+
+
+def other_frame(pipe, i, w, h, rng, pool):
+    """Frame i of a SAW or seamless sample set (frame 0 is clean). See synth_pipes.py."""
+    import synth_pipes as sp
+    from weldvision.pipes import helix_angle_deg
+
+    clean = i == 0
+    if pipe == "lsaw":
+        return sp.lsaw_frame(w, h, 0 if clean else 4, 0 if clean else int(rng.integers(2, 5)), rng, pool)
+    if pipe == "hsaw":
+        od, strip = HSAW_PIPES[i % len(HSAW_PIPES)]
+        img, meta = sp.hsaw_frame(w, h, 0 if clean else 3, 0 if clean else int(rng.integers(2, 5)), rng, pool,
+                                  helix_angle_deg(od, strip))
+        meta["od_mm"], meta["strip_width_mm"] = od, strip
+        return img, meta
+    return sp.seamless_frame(w, h, 0 if clean else int(rng.integers(3, 6)), rng, pool)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--n", type=int, default=6)
+    ap.add_argument("--pipe", default="erw", choices=["erw", "lsaw", "hsaw", "seamless", "all"])
+    ap.add_argument("--n", type=int, default=None, help="frames per set (default: 6 for ERW, 4 for the others)")
     ap.add_argument("--width", type=int, default=2400)
     ap.add_argument("--height", type=int, default=1200)
-    ap.add_argument("--out", default=str(ROOT / "samples" / "hd_frames"))
+    ap.add_argument("--out", default=None, help="output folder (default: the pipe type's sample folder)")
     ap.add_argument("--seed", type=int, default=7)
     args = ap.parse_args()
 
-    out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
-    rng = np.random.default_rng(args.seed)
-    random.seed(args.seed)
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from weldvision.pipes import PIPES
+
     pool = sorted((NEU / "images" / "test").glob("*.jpg"))
-    for i in range(args.n):
-        n_def = 0 if i == 0 else int(rng.integers(2, 6))  # frame 0 is a clean pipe -> expect PASS
-        img, meta = make_frame(i, args.width, args.height, n_def, rng, pool)
-        name = f"pipe_frame_{i:02d}"
-        cv2.imwrite(str(out / f"{name}.jpg"), img, [cv2.IMWRITE_JPEG_QUALITY, 92])
-        (out / f"{name}.json").write_text(json.dumps(meta, indent=1))
-        print(f"{name}: {len(meta['defects'])} GT boxes")
+    for pipe in (["erw", "lsaw", "hsaw", "seamless"] if args.pipe == "all" else [args.pipe]):
+        out = Path(args.out) if args.out else ROOT / PIPES[pipe].sample_dir
+        out.mkdir(parents=True, exist_ok=True)
+        rng = np.random.default_rng(args.seed)
+        random.seed(args.seed)
+        n = args.n or (6 if pipe == "erw" else 4)
+        for i in range(n):
+            if pipe == "erw":
+                n_def = 0 if i == 0 else int(rng.integers(2, 6))  # frame 0 is a clean pipe -> expect PASS
+                img, meta = make_frame(i, args.width, args.height, n_def, rng, pool)
+                name = f"pipe_frame_{i:02d}"
+            else:
+                img, meta = other_frame(pipe, i, args.width, args.height, rng, pool)
+                name = f"{pipe}_frame_{i:02d}"
+            cv2.imwrite(str(out / f"{name}.jpg"), img, [cv2.IMWRITE_JPEG_QUALITY, 92])
+            (out / f"{name}.json").write_text(json.dumps(meta, indent=1))
+            print(f"{pipe} {name}: {len(meta['defects'])} GT boxes")
 
 
 if __name__ == "__main__":

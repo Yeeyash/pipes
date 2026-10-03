@@ -1,0 +1,21 @@
+defect,severity,confidence,start_mm,end_mm,length_mm,across_mm,on_seam,frames,axial_mm,clock
+seam_tracking,minor,0.694,90.4,157.6,67.2,58.7,True,0,58,12:25
+bead_width,minor,0.990,195.8,245.8,50.0,54.1,True,0 1,104,12:44
+inclusion,reject,0.449,566.7,568.9,2.2,53.2,True,2,267,1:53
+porosity,reject,0.990,566.9,574.3,7.4,54.7,True,2,268,1:54
+rolled-in_scale,minor,0.759,651.7,666.2,14.6,26.9,False,3,310,2:11
+rolled-in_scale,minor,0.182,661.9,668.5,6.6,34.2,False,3,313,2:12
+patches,minor,0.492,680.0,682.9,2.9,74.7,False,3,320,2:16
+undercut,reject,0.796,685.0,708.2,23.2,46.7,True,3,327,2:19
+patches,minor,0.836,691.8,697.8,6.0,64.3,False,3,327,2:18
+inclusion,reject,0.619,693.1,696.8,3.7,70.0,False,3,327,2:18
+patches,minor,0.431,695.6,698.0,2.5,74.5,False,3,327,2:19
+crazing,reject,0.341,1067.5,1085.3,17.8,85.0,False,5,506,3:34
+patches,minor,0.184,1189.9,1192.1,2.2,50.9,True,5 6,560,3:57
+porosity,reject,0.950,1190.3,1200.9,10.6,54.4,True,5 6,562,3:58
+inclusion,reject,0.276,1198.3,1201.1,2.8,56.8,True,5 6,564,3:59
+crazing,reject,0.370,1286.5,1305.0,18.5,70.6,False,6,609,4:18
+rolled-in_scale,minor,0.772,1357.1,1368.6,11.5,72.6,False,6,640,4:31
+inclusion,reject,0.800,1519.1,1522.2,3.1,38.4,False,7,715,5:03
+inclusion,reject,0.277,1530.6,1533.0,2.4,38.7,False,7,720,5:05
+undercut,reject,0.878,1567.2,1598.4,31.2,46.8,True,7 8,744,5:15

@@ -1,0 +1,68 @@
+{
+ "pipe": "lsaw",
+ "mm_per_px": 0.1,
+ "seam": {
+  "orientation": "horizontal",
+  "center": 678,
+  "half_width": 121
+ },
+ "defects": [
+  {
+   "cls": "bead_width",
+   "box": [
+    991,
+    611,
+    1379,
+    754
+   ],
+   "on_seam": true,
+   "source": "bead",
+   "factor": 0.72
+  },
+  {
+   "cls": "undercut",
+   "box": [
+    1782,
+    567,
+    2010,
+    594
+   ],
+   "on_seam": true,
+   "source": "bead",
+   "side": "upper"
+  },
+  {
+   "cls": "porosity",
+   "box": [
+    102,
+    623,
+    219,
+    698
+   ],
+   "on_seam": true,
+   "source": "bead"
+  },
+  {
+   "cls": "pitted_surface",
+   "box": [
+    1186,
+    915,
+    1386,
+    1112
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "pitted_surface",
+   "box": [
+    633,
+    916,
+    771,
+    1110
+   ],
+   "on_seam": false,
+   "source": "surface"
+  }
+ ]
+}

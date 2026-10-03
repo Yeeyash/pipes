@@ -1,0 +1,118 @@
+{
+ "pipe": "hsaw",
+ "mm_per_px": 0.1,
+ "seam": {
+  "orientation": "angled",
+  "angle": 60.69843023967216,
+  "point": [
+   1149.42075987316,
+   628.3855679561191
+  ],
+  "half_width": 121
+ },
+ "defects": [
+  {
+   "cls": "bead_width",
+   "box": [
+    812,
+    154,
+    1155,
+    500
+   ],
+   "on_seam": true,
+   "source": "bead",
+   "factor": 1.33
+  },
+  {
+   "cls": "seam_tracking",
+   "box": [
+    1116,
+    775,
+    1522,
+    1200
+   ],
+   "on_seam": true,
+   "source": "bead",
+   "offset_px": 54.9
+  },
+  {
+   "cls": "crazing",
+   "box": [
+    1633,
+    1001,
+    1746,
+    1086
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "crazing",
+   "box": [
+    1590,
+    1082,
+    1755,
+    1200
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "scratches",
+   "box": [
+    1331,
+    428,
+    1379,
+    597
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "scratches",
+   "box": [
+    1341,
+    548,
+    1363,
+    626
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    2221,
+    778,
+    2239,
+    825
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    2175,
+    809,
+    2205,
+    886
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    2299,
+    789,
+    2318,
+    850
+   ],
+   "on_seam": false,
+   "source": "surface"
+  }
+ ],
+ "od_mm": 813,
+ "strip_width_mm": 1250
+}

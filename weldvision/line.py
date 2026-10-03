@@ -2,7 +2,9 @@
 pipe coordinates (mm along the pipe) across overlapping, encoder-triggered frames.
 
 Convention: the pipe axis runs along the image x axis (seam horizontal in the image), and the
-camera is triggered by a line encoder every `advance_mm` of pipe travel.
+camera is triggered by a line encoder every `advance_mm` of pipe travel. For a ring of cameras
+round a seamless pipe, "across" is the position round the circumference (unrolled), and each
+camera's frames are offset by the start of its arc.
 """
 import math
 from dataclasses import dataclass, field
@@ -92,6 +94,7 @@ class PipeDefect:
     bottom_mm: float
     on_seam: bool
     frames: list = field(default_factory=list)
+    cameras: list = field(default_factory=list)
 
     @property
     def length_mm(self):
@@ -105,29 +108,55 @@ class PipeDefect:
 class PipeTracker:
     """Collects per-frame detections into one de-duplicated defect log per pipe.
 
-    The same defect appears in two consecutive frames when it sits in the overlap zone; such
-    pairs (same class, overlapping along the pipe, close across it) are merged.
+    The same defect appears in two consecutive frames when it sits in the overlap zone, and in
+    two neighbouring cameras of a ring when it sits where their arcs overlap; such pairs (same
+    class, overlapping along the pipe, close across it) are merged.
+
+    wrap_mm: circumference for a camera ring; positions round the pipe are kept in [0, wrap_mm).
     """
 
-    def __init__(self, mm_per_px, across_tol_mm=5.0):
+    def __init__(self, mm_per_px, across_tol_mm=5.0, wrap_mm=None):
         self.mm_per_px = mm_per_px
         self.across_tol_mm = across_tol_mm
+        self.wrap_mm = wrap_mm
         self.defects: list[PipeDefect] = []
+        self.raw = 0  # detections received, before merging duplicates
 
-    def add(self, frame_idx, frame_start_mm, detections):
+    def _across_gap(self, a, b):
+        d = abs(a - b)
+        return min(d, self.wrap_mm - d) if self.wrap_mm else d
+
+    def _same_across(self, old, new, camera):
+        if not self.wrap_mm:
+            return abs(new.across_mm - old.across_mm) <= self.across_tol_mm
+        # Camera ring: two cameras may each see only part of a defect in their overlap, so their
+        # boxes have different centres. Same defect if the extents round the pipe overlap.
+        if self._across_gap(new.across_mm, old.across_mm) <= self.across_tol_mm:
+            return True
+        return camera not in old.cameras and new.top_mm <= old.bottom_mm + self.across_tol_mm and new.bottom_mm >= old.top_mm - self.across_tol_mm
+
+    def add(self, frame_idx, frame_start_mm, detections, across_offset_mm=0.0, camera=0):
         k = self.mm_per_px
+        self.raw += len(detections)
         for d in detections:
             x1, y1, x2, y2 = d.box
+            top, bottom = across_offset_mm + y1 * k, across_offset_mm + y2 * k
+            if self.wrap_mm and top >= self.wrap_mm:  # the last camera's arc runs past 360 deg
+                top, bottom = top - self.wrap_mm, bottom - self.wrap_mm
             new = PipeDefect(d.cls_name, d.conf, frame_start_mm + x1 * k, frame_start_mm + x2 * k,
-                             y1 * k, y2 * k, d.on_seam, [frame_idx])
+                             top, bottom, d.on_seam, [frame_idx], [camera])
             for old in self.defects:
                 if (old.cls_name == new.cls_name and frame_idx - old.frames[-1] <= 1
                         and new.start_mm <= old.end_mm and new.end_mm >= old.start_mm
-                        and abs(new.across_mm - old.across_mm) <= self.across_tol_mm):
+                        and self._same_across(old, new, camera)):
                     old.start_mm, old.end_mm = min(old.start_mm, new.start_mm), max(old.end_mm, new.end_mm)
-                    old.top_mm, old.bottom_mm = min(old.top_mm, new.top_mm), max(old.bottom_mm, new.bottom_mm)
+                    if abs(new.across_mm - old.across_mm) <= self.across_tol_mm:  # not across the wrap
+                        old.top_mm, old.bottom_mm = min(old.top_mm, new.top_mm), max(old.bottom_mm, new.bottom_mm)
                     old.conf, old.on_seam = max(old.conf, new.conf), old.on_seam or new.on_seam
-                    old.frames.append(frame_idx)
+                    if frame_idx not in old.frames:
+                        old.frames.append(frame_idx)
+                    if camera not in old.cameras:
+                        old.cameras.append(camera)
                     break
             else:
                 self.defects.append(new)

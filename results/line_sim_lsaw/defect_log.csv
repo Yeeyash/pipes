@@ -1,0 +1,15 @@
+defect,severity,confidence,start_mm,end_mm,length_mm,across_mm,on_seam,frames
+bead_width,minor,0.990,41.6,74.4,32.8,52.5,True,0
+undercut,reject,0.990,558.0,576.4,18.4,42.9,True,2
+porosity,reject,0.950,657.4,668.2,10.8,52.5,True,3
+inclusion,reject,0.693,720.3,723.0,2.7,35.2,False,3
+seam_tracking,minor,0.629,834.4,892.8,58.4,47.6,True,4
+rolled-in_scale,minor,0.832,1206.6,1214.5,7.9,24.2,False,5 6
+bead_width,minor,0.990,1234.4,1265.2,30.8,51.7,True,6
+crazing,reject,0.480,1397.6,1414.6,17.0,83.4,False,6 7
+pitted_surface,reject,0.867,1544.8,1562.8,18.1,67.4,False,7
+crazing,reject,0.801,1672.6,1690.3,17.7,87.6,False,8
+inclusion,reject,0.270,1695.3,1697.2,1.8,51.2,True,8
+porosity,reject,0.850,1695.5,1700.1,4.6,52.2,True,8
+inclusion,reject,0.184,1697.2,1699.1,1.9,49.4,True,8
+pitted_surface,reject,0.569,1917.4,1932.8,15.4,38.2,False,9

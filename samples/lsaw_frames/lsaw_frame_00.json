@@ -1,0 +1,10 @@
+{
+ "pipe": "lsaw",
+ "mm_per_px": 0.1,
+ "seam": {
+  "orientation": "horizontal",
+  "center": 624,
+  "half_width": 121
+ },
+ "defects": []
+}

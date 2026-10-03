@@ -1,0 +1,29 @@
+defect,severity,confidence,start_mm,end_mm,length_mm,across_mm,on_seam,frames,clock,cameras
+crazing,reject,0.421,55.6,88.4,32.9,450.8,False,0,10:14,4 5
+crazing,reject,0.190,65.0,78.4,13.4,466.0,False,0,10:35,5
+crazing,reject,0.477,180.2,201.8,21.6,325.6,False,0,7:23,3
+crazing,reject,0.454,180.9,216.9,36.0,309.4,False,0,7:01,3
+inclusion,reject,0.829,230.2,237.6,7.3,396.9,False,0,9:00,4
+inclusion,reject,0.665,232.8,240.2,7.5,415.3,False,0,9:25,4
+crazing,reject,0.315,233.4,265.2,31.8,233.3,False,0,5:18,2
+inclusion,reject,0.729,238.5,244.3,5.8,394.4,False,0,8:57,4
+crazing,reject,0.166,245.5,258.8,13.3,247.6,False,0,5:37,2
+inclusion,reject,0.614,249.0,253.4,4.4,392.5,False,0,8:55,4
+crazing,reject,0.217,260.7,270.5,9.8,248.7,False,0,5:39,2
+pitted_surface,reject,0.730,320.1,357.3,37.2,187.2,False,0,4:15,1 2
+inclusion,reject,0.118,352.6,358.6,6.0,157.8,False,0,3:35,1
+crazing,reject,0.696,437.9,474.5,36.6,420.0,False,0 1,9:32,4
+crazing,reject,0.685,439.0,475.0,36.0,437.3,False,0 1,9:56,4 5
+crazing,reject,0.227,439.2,474.7,35.5,443.2,False,1,10:04,5
+pitted_surface,reject,0.588,466.9,502.4,35.6,379.2,False,1,8:36,4
+pitted_surface,reject,0.765,466.9,489.6,22.7,366.5,False,0,8:19,3 4
+crazing,reject,0.816,471.0,491.3,20.3,476.1,False,0 1,10:48,5
+patches,minor,0.744,492.4,502.3,9.9,392.6,False,1,8:55,4
+crazing,reject,0.398,492.5,508.0,15.5,475.1,False,1,10:47,5
+crazing,reject,0.124,496.3,508.3,12.0,494.3,False,1,11:13,5
+scratches,minor,0.262,712.2,715.4,3.2,391.1,False,1 2,8:53,4
+patches,minor,0.851,724.0,733.7,9.6,440.8,False,1 2,10:00,4 5
+scratches,minor,0.732,727.5,731.6,4.1,405.6,False,1 2,9:12,4
+pitted_surface,reject,0.861,809.5,844.3,34.8,237.9,False,1 2,5:24,2
+pitted_surface,reject,0.338,945.8,958.4,12.6,33.6,False,2,12:46,0
+scratches,minor,0.805,966.3,969.7,3.4,42.2,False,2,12:58,0

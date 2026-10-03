@@ -1,0 +1,96 @@
+{
+ "pipe": "hsaw",
+ "mm_per_px": 0.1,
+ "seam": {
+  "orientation": "angled",
+  "angle": 61.96422335497814,
+  "point": [
+   1252.0766021185648,
+   572.2686547065475
+  ],
+  "half_width": 121
+ },
+ "defects": [
+  {
+   "cls": "bead_width",
+   "box": [
+    1247,
+    705,
+    1666,
+    1200
+   ],
+   "on_seam": true,
+   "source": "bead",
+   "factor": 1.31
+  },
+  {
+   "cls": "seam_tracking",
+   "box": [
+    897,
+    0,
+    1291,
+    421
+   ],
+   "on_seam": true,
+   "source": "bead",
+   "offset_px": -56.0
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    728,
+    585,
+    796,
+    679
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    716,
+    495,
+    770,
+    541
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "rolled-in_scale",
+   "box": [
+    706,
+    637,
+    816,
+    675
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    961,
+    868,
+    986,
+    943
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    965,
+    935,
+    982,
+    1006
+   ],
+   "on_seam": false,
+   "source": "surface"
+  }
+ ],
+ "od_mm": 1219,
+ "strip_width_mm": 1800
+}

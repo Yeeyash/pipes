@@ -1,0 +1,16 @@
+{
+ "pipe": "hsaw",
+ "mm_per_px": 0.1,
+ "seam": {
+  "orientation": "angled",
+  "angle": 61.96922826037283,
+  "point": [
+   1153.2171476532676,
+   624.9071219996175
+  ],
+  "half_width": 121
+ },
+ "defects": [],
+ "od_mm": 1016,
+ "strip_width_mm": 1500
+}

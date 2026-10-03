@@ -1,0 +1,135 @@
+{
+ "pipe": "lsaw",
+ "mm_per_px": 0.1,
+ "seam": {
+  "orientation": "horizontal",
+  "center": 517,
+  "half_width": 121
+ },
+ "defects": [
+  {
+   "cls": "bead_width",
+   "box": [
+    1390,
+    445,
+    1702,
+    579
+   ],
+   "on_seam": true,
+   "source": "bead",
+   "factor": 0.69
+  },
+  {
+   "cls": "seam_tracking",
+   "box": [
+    516,
+    463,
+    1006,
+    655
+   ],
+   "on_seam": true,
+   "source": "bead",
+   "offset_px": 47.4
+  },
+  {
+   "cls": "undercut",
+   "box": [
+    2005,
+    596,
+    2235,
+    624
+   ],
+   "on_seam": true,
+   "source": "bead",
+   "side": "lower"
+  },
+  {
+   "cls": "porosity",
+   "box": [
+    100,
+    466,
+    201,
+    563
+   ],
+   "on_seam": true,
+   "source": "bead"
+  },
+  {
+   "cls": "patches",
+   "box": [
+    1897,
+    923,
+    1933,
+    1066
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "patches",
+   "box": [
+    1984,
+    869,
+    2060,
+    1061
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1469,
+    647,
+    1506,
+    770
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1510,
+    702,
+    1537,
+    788
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1574,
+    593,
+    1616,
+    756
+   ],
+   "on_seam": false,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1514,
+    603,
+    1535,
+    651
+   ],
+   "on_seam": true,
+   "source": "surface"
+  },
+  {
+   "cls": "inclusion",
+   "box": [
+    1529,
+    668,
+    1544,
+    699
+   ],
+   "on_seam": false,
+   "source": "surface"
+  }
+ ]
+}

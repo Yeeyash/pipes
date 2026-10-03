@@ -111,7 +111,8 @@ class DefectDetector:
             return self.model.predict(images, imgsz=self.imgsz, conf=conf, iou=iou,
                                       device=self.device, verbose=False)
 
-    def predict(self, img, conf=0.1, iou=0.5, tile=None, overlap=0.25, seam=None, roi=None, batch=16):
+    def predict(self, img, conf=0.1, iou=0.5, tile=None, overlap=0.25, seam=None, roi=None, batch=16,
+                tile_filter=None):
         """Detect defects in a BGR image.
 
         tile: tile size in px; None/0 = single pass on the whole image. Use tiles when the
@@ -119,6 +120,8 @@ class DefectDetector:
         seam: optional Seam; detections whose centre lies in the seam band get on_seam=True.
         roi:  optional (x1, y1, x2, y2); only this region is analysed (e.g. the seam band from
               Seam.band(), which cuts compute several-fold on a seam-inspection camera).
+        tile_filter: optional f(x, y, size) -> bool; only tiles it accepts are analysed. Used for
+              seam-only inspection of an angled (spiral) seam, whose band is not a rectangle.
         """
         if img.ndim == 2:
             img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
@@ -133,6 +136,8 @@ class DefectDetector:
         else:
             tile = min(tile, h, w)
             origins = _tiles(h, w, tile, overlap)
+            if tile_filter is not None:
+                origins = [(x, y) for x, y in origins if tile_filter(x + rx, y + ry, tile)]
             crops = [img[y:y + tile, x:x + tile] for x, y in origins]
 
         all_boxes, all_scores, all_cls, all_tiles = [], [], [], []
@@ -171,7 +176,13 @@ def draw(img, result, show_seam=True):
     lw = max(1, round(max(h, w) / 400))
     fs = max(0.35, max(h, w) / 1400)
 
-    if show_seam and result.seam is not None:
+    if show_seam and result.seam is not None and result.seam.orientation == "angled":
+        poly = result.seam.polygon(out.shape)
+        overlay = out.copy()
+        cv2.fillPoly(overlay, [poly], (255, 200, 0))
+        out = cv2.addWeighted(overlay, 0.18, out, 0.82, 0)
+        cv2.polylines(out, [poly], True, (255, 200, 0), lw)
+    elif show_seam and result.seam is not None:
         x1, y1, x2, y2 = result.seam.band(out.shape)
         overlay = out.copy()
         cv2.rectangle(overlay, (x1, y1), (x2, y2), (255, 200, 0), -1)

@@ -20,8 +20,8 @@ results/**/*.jpg
 results/**/*.jpeg
 results/**/*.png
 # ...except what the hosted demo needs: the default model, the demo frames, the last line-simulation overview
-!samples/hd_frames/*.jpg
-!results/line_sim/overview.jpg
+!samples/*_frames/*.jpg
+!results/line_sim*/overview.jpg
 
 # Python
 __pycache__/
