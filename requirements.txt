@@ -1,9 +1,14 @@
-# Install PyTorch with CUDA first (https://pytorch.org/get-started/locally/), e.g.
+# CPU-only PyTorch, used by the hosted demo (no GPU there, and the CPU wheels are ~10x smaller).
+# For a local GPU, install CUDA PyTorch first (https://pytorch.org/get-started/locally/), e.g.
 #   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+# pip then keeps that build when installing the rest of this file.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision
 ultralytics>=8.3
 opencv-python>=4.8
 numpy
 pandas
 pyyaml
-streamlit>=1.30
+streamlit>=1.50
 huggingface_hub

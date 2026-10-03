@@ -6,6 +6,7 @@ so a 4K or 12 MP frame is cut into overlapping tiles. Each tile is detected sepa
 the boxes are mapped back and merged. Downscaling the whole frame to the model input size
 instead would make pinholes and fine cracks disappear.
 """
+import threading
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -103,10 +104,12 @@ class DefectDetector:
         self.names = self.model.names
         self.imgsz = imgsz
         self.device = device if device is not None else (0 if torch.cuda.is_available() else "cpu")
+        self._lock = threading.Lock()  # one Ultralytics model is not safe to call from several threads at once
 
     def _run(self, images, conf, iou):
-        return self.model.predict(images, imgsz=self.imgsz, conf=conf, iou=iou,
-                                  device=self.device, verbose=False)
+        with self._lock:
+            return self.model.predict(images, imgsz=self.imgsz, conf=conf, iou=iou,
+                                      device=self.device, verbose=False)
 
     def predict(self, img, conf=0.1, iou=0.5, tile=None, overlap=0.25, seam=None, roi=None, batch=16):
         """Detect defects in a BGR image.
@@ -138,7 +141,7 @@ class DefectDetector:
             for t, ((ox, oy), r) in enumerate(zip(origins[i:i + batch], results), start=i):
                 if len(r.boxes) == 0:
                     continue
-                b = r.boxes.xyxy.cpu()
+                b = r.boxes.xyxy.cpu().clone()  # on CPU .cpu() returns the read-only inference tensor itself
                 b[:, [0, 2]] += ox + rx
                 b[:, [1, 3]] += oy + ry
                 all_boxes.append(b)

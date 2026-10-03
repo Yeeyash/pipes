@@ -18,7 +18,7 @@ image ─► seam band ─► tiles ─► YOLO ─► NMS + cross-tile merge �
 
 ```bash
 pip install -r requirements.txt          # install CUDA PyTorch first, see file
-python scripts/download_data.py          # NEU-DET -> data/NEU-DET
+python scripts/download_data.py          # NEU-DET -> data/NEU-DET (--test-only: just what the app needs)
 python scripts/make_negatives.py         # defect-free background tiles -> data/negatives
 python train.py                          # ~20 min on an RTX 3050 4 GB -> models/weld_defects.pt
 python scripts/make_demo_frames.py       # synthetic 2400x1200 pipe frames -> samples/hd_frames
@@ -29,6 +29,32 @@ python detect.py samples/hd_frames --seam-only   # seam band only, ~3x faster
 python scripts/eval_frames.py            # score the full pipeline against ground truth
 python scripts/simulate_line.py          # 2 m of pipe at 8 m/min: real-time check + defect log by position
 ```
+
+## Deploying the demo
+
+The repository holds everything the app needs except the NEU-DET test images, which the app
+downloads (~3 MB) on first start. Training data is not needed. `requirements.txt` installs
+CPU-only PyTorch, because free hosts have no GPU.
+
+**Streamlit Community Cloud** (free; deploys straight from GitHub):
+1. Push this repository to GitHub.
+2. Go to [share.streamlit.io](https://share.streamlit.io), sign in with GitHub and choose **Create app**.
+3. Select the repository and branch, main file `app.py`, and under *Advanced settings* choose Python 3.12.
+4. Deploy. The first build takes a few minutes. `packages.txt` adds the system libraries OpenCV needs.
+
+**Docker** (Hugging Face Spaces with the Docker SDK, Render, Fly.io, or any VM):
+```bash
+docker build -t weldvision .
+docker run -p 8501:8501 weldvision        # http://localhost:8501
+```
+On Hugging Face Spaces, set `app_port: 8501` in the Space's README header.
+
+**Speed on a CPU host:** a 2400×1200 frame takes about 15 s for the full frame and about 5 s
+for seam-only on 2 cores, against 0.4 s on the laptop GPU. Results are cached, so changing
+another setting does not re-run them. The line-simulation tab therefore shows the CPU running
+far over the frame budget. That is a property of the free host, not of the method. For a faster
+CPU demo, export to OpenVINO or ONNX (`model.export(format="openvino")`), which is typically
+2–3× faster on CPU.
 
 ## Data
 
@@ -174,7 +200,8 @@ plenty of time to flag it by encoder position.
 ## Layout
 
 ```
-app.py                  Streamlit demo
+app.py                  Streamlit demo (production, seam-only, line-simulation tabs)
+Dockerfile, packages.txt, .streamlit/   deployment
 detect.py               batch inspection CLI -> CSV reports + annotated images
 train.py                training (NEU-DET + background tiles), copies best weights to models/
 weldvision/

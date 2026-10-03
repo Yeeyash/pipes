@@ -11,6 +11,8 @@ The script checks two things:
     python scripts/simulate_line.py                         # 8 m/min, 0.1 mm/px, 2 m of pipe
     python scripts/simulate_line.py --speed 8 --roi seam    # analyse only the seam band
     python scripts/simulate_line.py --realtime              # pace frames at real line speed
+
+The functions below are also used by the "Line simulation" tab of app.py.
 """
 import argparse
 import csv
@@ -29,6 +31,34 @@ from weldvision import DefectDetector, info, locate_seam, verdict  # noqa: E402
 from weldvision.line import LineSetup, PipeTracker  # noqa: E402
 
 
+def build_pipe(length_mm, mm_per_px, across_px, n_defects, seed):
+    """Synthetic pipe as one long image (pipe axis along x) plus ground-truth boxes in mm."""
+    rng = np.random.default_rng(seed)
+    pool = sorted((NEU / "images" / "test").glob("*.jpg"))
+    strip, meta = make_frame(0, int(length_mm / mm_per_px), across_px, n_defects, rng, pool)
+    k = mm_per_px
+    gt = [(g["box"][0] * k, g["box"][1] * k, g["box"][2] * k, g["box"][3] * k, g["cls"]) for g in meta["defects"]]
+    return strip, gt
+
+
+def frame_starts(length_px, line):
+    """Pixel x where each encoder-triggered frame starts, including a final frame for the pipe tail."""
+    advance_px = int(round(line.advance_mm / line.mm_per_px))
+    starts = list(range(0, length_px - line.frame_px_along + 1, advance_px))
+    if starts[-1] + line.frame_px_along < length_px:
+        starts.append(length_px - line.frame_px_along)
+    return starts
+
+
+def inspect_frame(det, frame, conf, tile, seam_only):
+    """Seam localisation + detection on one camera frame. Returns (result, seconds)."""
+    t0 = time.perf_counter()
+    seam = locate_seam(frame, "horizontal")
+    roi = seam.band(frame.shape, pad=tile // 2) if (seam and seam_only) else None
+    res = det.predict(frame, conf=conf, tile=tile, seam=seam, roi=roi)
+    return res, time.perf_counter() - t0
+
+
 def iou_mm(d, g):
     iw = max(0, min(d.end_mm, g[2]) - max(d.start_mm, g[0]))
     ih = max(0, min(d.bottom_mm, g[3]) - max(d.top_mm, g[1]))
@@ -36,6 +66,43 @@ def iou_mm(d, g):
     a = (d.end_mm - d.start_mm) * (d.bottom_mm - d.top_mm)
     b = (g[2] - g[0]) * (g[3] - g[1])
     return inter / (a + b - inter + 1e-6)
+
+
+def score(defects, gt, thr=0.3):
+    """(ground-truth boxes found, false alarms) at IoU >= thr."""
+    found = sum(any(iou_mm(d, g) >= thr for d in defects) for g in gt)
+    false = sum(all(iou_mm(d, g) < thr for g in gt) for d in defects)
+    return found, false
+
+
+def write_log(defects, path):
+    with open(path, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["defect", "severity", "confidence", "start_mm", "end_mm", "length_mm", "across_mm", "on_seam", "frames"])
+        for d in sorted(defects, key=lambda d: d.start_mm):
+            w.writerow([d.cls_name, info(d.cls_name).severity, f"{d.conf:.3f}", f"{d.start_mm:.1f}", f"{d.end_mm:.1f}",
+                        f"{d.length_mm:.1f}", f"{d.across_mm:.1f}", d.on_seam, " ".join(map(str, d.frames))])
+
+
+def render_overview(strip, gt, defects, mm_per_px, width=2000):
+    """Whole pipe wrapped into 0.5 m rows: white = ground truth, colour = detected, ticks every 250 mm."""
+    k = mm_per_px
+    ov = strip.copy()
+    for g in gt:
+        cv2.rectangle(ov, (int(g[0] / k), int(g[1] / k)), (int(g[2] / k), int(g[3] / k)), (255, 255, 255), 4)
+    for d in defects:
+        cv2.rectangle(ov, (int(d.start_mm / k), int(d.top_mm / k)), (int(d.end_mm / k), int(d.bottom_mm / k)),
+                      info(d.cls_name).color, 8)
+    for m in range(0, int(strip.shape[1] * k) + 1, 250):
+        x = int(m / k)
+        cv2.line(ov, (x, 0), (x, 60), (0, 255, 255), 6)
+        cv2.putText(ov, f"{m / 1000:.2f} m", (x + 10, 55), cv2.FONT_HERSHEY_SIMPLEX, 1.8, (0, 255, 255), 4)
+    row_px = int(500 / k)
+    rows = [ov[:, x:x + row_px] for x in range(0, ov.shape[1], row_px)]
+    rows[-1] = cv2.copyMakeBorder(rows[-1], 0, 0, 0, row_px - rows[-1].shape[1], cv2.BORDER_CONSTANT)
+    sheet = np.vstack([cv2.copyMakeBorder(r, 0, 40, 0, 0, cv2.BORDER_CONSTANT) for r in rows])
+    scale = width / sheet.shape[1]
+    return cv2.resize(sheet, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
 
 
 def main():
@@ -58,46 +125,26 @@ def main():
     for k, v in line.summary():
         print(f"  {k:24s} {v}")
 
-    # ---- build the pipe (one long image along x) with ground truth
-    rng = np.random.default_rng(args.seed)
-    length_px = int(args.length / args.mm_per_px)
-    pool = sorted((NEU / "images" / "test").glob("*.jpg"))
-    print(f"\nGenerating {args.length / 1000:g} m of pipe ({length_px} x {args.across} px)...")
-    strip, meta = make_frame(0, length_px, args.across, args.defects, rng, pool)
-    k = args.mm_per_px
-    gt = [(g["box"][0] * k, g["box"][1] * k, g["box"][2] * k, g["box"][3] * k, g["cls"]) for g in meta["defects"]]
+    print(f"\nGenerating {args.length / 1000:g} m of pipe...")
+    strip, gt = build_pipe(args.length, args.mm_per_px, args.across, args.defects, args.seed)
 
-    # ---- run the line
     det = DefectDetector()
     det.predict(strip[:, :line.frame_px_along], conf=args.conf, tile=args.tile)  # CUDA warm-up
     tracker = PipeTracker(args.mm_per_px)
-    advance_px = int(round(line.advance_mm / args.mm_per_px))
-    starts = list(range(0, length_px - line.frame_px_along + 1, advance_px))
-    if starts[-1] + line.frame_px_along < length_px:
-        starts.append(length_px - line.frame_px_along)  # tail of the pipe
-
     times = []
     print(f"\n{'frame':>5s} {'pipe pos':>12s} {'defects':>7s} {'proc':>8s} {'budget':>8s}")
     t_line0 = time.perf_counter()
-    for i, x0 in enumerate(starts):
+    for i, x0 in enumerate(frame_starts(strip.shape[1], line)):
         if args.realtime:  # wait until the encoder would fire for this frame
-            due = t_line0 + x0 * k / line.speed_mm_s
-            time.sleep(max(0.0, due - time.perf_counter()))
-        frame = strip[:, x0:x0 + line.frame_px_along]
-        t0 = time.perf_counter()
-        seam = locate_seam(frame, "horizontal")
-        roi = seam.band(frame.shape, pad=int(args.tile / 2)) if (seam and args.roi == "seam") else None
-        res = det.predict(frame, conf=args.conf, tile=args.tile, seam=seam, roi=roi)
-        dt = time.perf_counter() - t0
+            time.sleep(max(0.0, t_line0 + x0 * args.mm_per_px / line.speed_mm_s - time.perf_counter()))
+        res, dt = inspect_frame(det, strip[:, x0:x0 + line.frame_px_along], args.conf, args.tile, args.roi == "seam")
         times.append(dt)
-        tracker.add(i, x0 * k, res.detections)
+        tracker.add(i, x0 * args.mm_per_px, res.detections)
         flag = "" if dt <= line.frame_budget_s else "  << OVER BUDGET"
-        print(f"{i:5d} {x0 * k / 1000:9.3f} m {len(res.detections):7d} {dt * 1000:6.0f}ms "
+        print(f"{i:5d} {x0 * args.mm_per_px / 1000:9.3f} m {len(res.detections):7d} {dt * 1000:6.0f}ms "
               f"{line.frame_budget_s * 1000:6.0f}ms{flag}")
 
-    # ---- score the defect log against ground truth
-    found = sum(any(iou_mm(d, g) >= 0.3 for d in tracker.defects) for g in gt)
-    false = sum(all(iou_mm(d, g) < 0.3 for g in gt) for d in tracker.defects)
+    found, false = score(tracker.defects, gt)
     raw = sum(len(d.frames) for d in tracker.defects)
     times_ms = np.array(times) * 1000
     v, reason = verdict(tracker.defects, seam_band=True)
@@ -109,31 +156,10 @@ def main():
           f"{raw - len(tracker.defects)} overlap duplicates merged)")
     print(f"Ground truth: {found}/{len(gt)} found, {false} false alarms   |   Pipe verdict: {v} - {reason}")
 
-    # ---- outputs: defect log for the marking/rejection system + overview picture
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    with open(out / "defect_log.csv", "w", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(["defect", "severity", "confidence", "start_mm", "end_mm", "length_mm", "across_mm", "on_seam", "frames"])
-        for d in sorted(tracker.defects, key=lambda d: d.start_mm):
-            w.writerow([d.cls_name, info(d.cls_name).severity, f"{d.conf:.3f}", f"{d.start_mm:.1f}", f"{d.end_mm:.1f}",
-                        f"{d.length_mm:.1f}", f"{d.across_mm:.1f}", d.on_seam, " ".join(map(str, d.frames))])
-    ov = strip.copy()
-    for g in gt:
-        cv2.rectangle(ov, (int(g[0] / k), int(g[1] / k)), (int(g[2] / k), int(g[3] / k)), (255, 255, 255), 4)
-    for d in tracker.defects:
-        cv2.rectangle(ov, (int(d.start_mm / k), int(d.top_mm / k)), (int(d.end_mm / k), int(d.bottom_mm / k)),
-                      info(d.cls_name).color, 8)
-    for m in range(0, int(args.length) + 1, 250):  # position ticks every 250 mm
-        x = int(m / k)
-        cv2.line(ov, (x, 0), (x, 60), (0, 255, 255), 6)
-        cv2.putText(ov, f"{m / 1000:.2f} m", (x + 10, 55), cv2.FONT_HERSHEY_SIMPLEX, 1.8, (0, 255, 255), 4)
-    row_px = int(500 / k)  # wrap the pipe into 0.5 m rows so the overview stays readable
-    rows = [ov[:, x:x + row_px] for x in range(0, ov.shape[1], row_px)]
-    rows[-1] = cv2.copyMakeBorder(rows[-1], 0, 0, 0, row_px - rows[-1].shape[1], cv2.BORDER_CONSTANT)
-    sheet = np.vstack([cv2.copyMakeBorder(r, 0, 40, 0, 0, cv2.BORDER_CONSTANT) for r in rows])
-    scale = 2000 / sheet.shape[1]
-    cv2.imwrite(str(out / "overview.jpg"), cv2.resize(sheet, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA))
+    write_log(tracker.defects, out / "defect_log.csv")
+    cv2.imwrite(str(out / "overview.jpg"), render_overview(strip, gt, tracker.defects, args.mm_per_px))
     print(f"Wrote {out / 'defect_log.csv'} and {out / 'overview.jpg'} (white = ground truth, colour = detected)")
 
 
